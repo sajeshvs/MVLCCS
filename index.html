@@ -34,6 +34,26 @@
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             color: var(--text-primary);
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 100vw;
+            width: 100%;
+        }
+
+        /* Make interface use full width */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 95vw;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .container {
+                max-width: 98vw;
+            }
         }
 
         /* Enhanced scrollbar */
@@ -56,8 +76,10 @@
 
         /* Improved table styles */
         .table-container {
-            max-height: calc(100vh - 280px);
+            max-height: calc(100vh - 200px);
+            min-height: 600px;
             overflow-y: auto;
+            overflow-x: auto;
             border-radius: 12px;
             box-shadow: var(--shadow-md);
         }
@@ -183,6 +205,26 @@
             font-weight: 500;
             letter-spacing: 0.025em;
         }
+
+        /* Responsive text and spacing */
+        @media (max-width: 640px) {
+            .table-container {
+                max-height: calc(100vh - 150px);
+                min-height: 400px;
+            }
+            
+            /* Compact mobile view */
+            .badge {
+                padding: 0.125rem 0.5rem;
+                font-size: 0.6rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                max-height: calc(100vh - 180px);
+            }
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -195,44 +237,44 @@
         </div>
     </div>
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+    <div class="container mx-auto p-2 sm:p-4 lg:p-6 max-w-full">
         <!-- Enhanced Header -->
-        <header class="mb-8 text-center">
+        <header class="mb-6 text-center">
             <div class="relative">
-                <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
                     Construction Task Catalog
                 </h1>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                <p class="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
                     A comprehensive and searchable interface for the US Army Corps of Engineers task database
                 </p>
-                <div class="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-10 animate-pulse"></div>
-                <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full opacity-10 animate-pulse" style="animation-delay: 1s;"></div>
+                <div class="absolute -top-4 -right-4 w-16 h-16 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-10 animate-pulse"></div>
+                <div class="absolute -bottom-4 -left-4 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full opacity-10 animate-pulse" style="animation-delay: 1s;"></div>
             </div>
         </header>
 
         <!-- Stats Overview (shown when data is loaded) -->
-        <div id="statsOverview" class="hidden mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="stat-card card p-6 text-center">
-                <div class="text-3xl font-bold text-blue-600" id="totalTasks">0</div>
-                <div class="text-sm font-medium text-gray-600 mt-1">Total Tasks</div>
+        <div id="statsOverview" class="hidden mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="stat-card card p-4 text-center">
+                <div class="text-2xl sm:text-3xl font-bold text-blue-600" id="totalTasks">0</div>
+                <div class="text-xs sm:text-sm font-medium text-gray-600 mt-1">Total Tasks</div>
             </div>
-            <div class="stat-card card p-6 text-center">
-                <div class="text-3xl font-bold text-green-600" id="totalValue">$0</div>
-                <div class="text-sm font-medium text-gray-600 mt-1">Total Value</div>
+            <div class="stat-card card p-4 text-center">
+                <div class="text-2xl sm:text-3xl font-bold text-green-600" id="totalValue">$0</div>
+                <div class="text-xs sm:text-sm font-medium text-gray-600 mt-1">Total Value</div>
             </div>
-            <div class="stat-card card p-6 text-center">
-                <div class="text-3xl font-bold text-purple-600" id="totalDivisions">0</div>
-                <div class="text-sm font-medium text-gray-600 mt-1">Divisions</div>
+            <div class="stat-card card p-4 text-center">
+                <div class="text-2xl sm:text-3xl font-bold text-purple-600" id="totalDivisions">0</div>
+                <div class="text-xs sm:text-sm font-medium text-gray-600 mt-1">Divisions</div>
             </div>
-            <div class="stat-card card p-6 text-center">
-                <div class="text-3xl font-bold text-orange-600" id="avgCost">$0</div>
-                <div class="text-sm font-medium text-gray-600 mt-1">Average Cost</div>
+            <div class="stat-card card p-4 text-center">
+                <div class="text-2xl sm:text-3xl font-bold text-orange-600" id="avgCost">$0</div>
+                <div class="text-xs sm:text-sm font-medium text-gray-600 mt-1">Average Cost</div>
             </div>
         </div>
 
         <!-- Enhanced Search and Filter Controls -->
-        <div class="card p-6 mb-6 sticky top-4 z-20">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+        <div class="card p-3 sm:p-4 lg:p-6 mb-4 sticky top-2 z-20">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-end">
                 <div class="lg:col-span-5">
                     <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-2">
                         Search Tasks
@@ -243,7 +285,7 @@
                         </div>
                         <input type="text" id="searchInput" 
                                placeholder="Search by description, CSI code, costs, division, or any field..." 
-                               class="form-input w-full pl-10 pr-12 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                               class="form-input w-full pl-10 pr-12 py-2 sm:py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
                                disabled>
                         <div id="searchLoader" class="absolute inset-y-0 right-8 pr-3 flex items-center hidden">
                             <div class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
@@ -267,7 +309,7 @@
                     <label for="costRangeFilter" class="block text-sm font-medium text-gray-700 mb-2">
                         Cost Range
                     </label>
-                    <select id="costRangeFilter" class="form-input w-full py-3 rounded-lg" disabled>
+                    <select id="costRangeFilter" class="form-input w-full py-2 sm:py-3 rounded-lg" disabled>
                         <option value="">All Costs</option>
                         <option value="0-1000">$0 - $1,000</option>
                         <option value="1000-10000">$1,000 - $10,000</option>
@@ -278,7 +320,7 @@
                 </div>
                 <div class="lg:col-span-2">
                     <button id="clearFiltersBtn" 
-                            class="btn-primary w-full py-3 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 flex items-center justify-center space-x-2" 
+                            class="btn-primary w-full py-2 sm:py-3 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 flex items-center justify-center space-x-2" 
                             disabled>
                         <i data-lucide="x-circle" class="h-4 w-4"></i>
                         <span>Clear Filters</span>
@@ -303,6 +345,41 @@
             </div>
         </div>
 
+        <!-- Pagination Controls -->
+        <div id="paginationControls" class="hidden bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-700">
+                        Page <span id="currentPageDisplay">1</span> of <span id="totalPagesDisplay">1</span>
+                        (Showing <span id="itemsRangeDisplay">1-50</span> of <span id="totalItemsDisplay">0</span> items)
+                    </span>
+                    <select id="itemsPerPageSelect" class="form-input text-sm py-1 px-2 rounded border border-gray-300">
+                        <option value="25">25 per page</option>
+                        <option value="50" selected>50 per page</option>
+                        <option value="100">100 per page</option>
+                        <option value="200">200 per page</option>
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="firstPageBtn" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <i data-lucide="chevrons-left" class="w-4 h-4"></i>
+                    </button>
+                    <button id="prevPageBtn" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                    <div id="pageNumbers" class="flex space-x-1">
+                        <!-- Page numbers will be generated here -->
+                    </div>
+                    <button id="nextPageBtn" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                    <button id="lastPageBtn" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-lucide="chevrons-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Main Content: Task Table -->
         <main class="card overflow-hidden">
             <div id="uploadPrompt" class="text-center p-12">
@@ -312,12 +389,20 @@
                     </div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-3">Welcome to Task Catalog!</h2>
                     <p class="text-gray-600 mb-6 leading-relaxed">
-                        Upload your <code class="bg-gray-100 px-2 py-1 rounded font-mono text-sm">tasks.json</code> file to get started with exploring construction tasks and their costs.
+                        Could not auto-load <code class="bg-gray-100 px-2 py-1 rounded font-mono text-sm">tasks.json</code> from the current directory.<br>
+                        Please upload your <code class="bg-gray-100 px-2 py-1 rounded font-mono text-sm">tasks.json</code> file to get started with exploring construction tasks and their costs.
                     </p>
-                    <label for="jsonFilePicker" class="btn-primary cursor-pointer inline-flex items-center space-x-2 py-3 px-6 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200">
-                        <i data-lucide="file-plus" class="h-5 w-5"></i>
-                        <span>Select tasks.json</span>
-                    </label>
+                    <div class="space-y-3">
+                        <button id="retryAutoLoad" class="btn-primary cursor-pointer inline-flex items-center space-x-2 py-3 px-6 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200">
+                            <i data-lucide="refresh-cw" class="h-5 w-5"></i>
+                            <span>Try Auto-Load Again</span>
+                        </button>
+                        <div class="text-gray-400 text-sm">or</div>
+                        <label for="jsonFilePicker" class="btn-primary cursor-pointer inline-flex items-center space-x-2 py-3 px-6 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200">
+                            <i data-lucide="file-plus" class="h-5 w-5"></i>
+                            <span>Select tasks.json</span>
+                        </label>
+                    </div>
                     <input type="file" id="jsonFilePicker" class="hidden" accept=".json">
                     <p id="uploadError" class="text-red-500 text-sm mt-4 hidden"></p>
                     <div class="mt-8 text-xs text-gray-500">
@@ -340,61 +425,61 @@
             </div>
 
             <div class="table-container hidden" id="tableWrapper">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="csi_code">
+                            <th scope="col" class="px-3 sm:px-6 py-2 sm:py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="csi_code">
                                 <div class="flex items-center space-x-1">
                                     <span>CSI Code</span>
-                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                    <i data-lucide="chevrons-up-down" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="description">
+                            <th scope="col" class="px-3 sm:px-6 py-2 sm:py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="description">
                                 <div class="flex items-center space-x-1">
                                     <span>Description</span>
-                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                    <i data-lucide="chevrons-up-down" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="uom">
+                            <th scope="col" class="px-3 sm:px-6 py-2 sm:py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="uom">
                                 <div class="flex items-center space-x-1">
                                     <span>UOM</span>
-                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                    <i data-lucide="chevrons-up-down" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="division">
+                            <th scope="col" class="hidden lg:table-cell px-3 sm:px-6 py-2 sm:py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="division">
                                 <div class="flex items-center space-x-1">
                                     <span>Division</span>
-                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                    <i data-lucide="chevrons-up-down" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="labor_cost">
+                            <th scope="col" class="hidden md:table-cell px-3 sm:px-6 py-2 sm:py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="labor_cost">
                                 <div class="flex items-center justify-end space-x-1">
                                     <span>Labor</span>
-                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                    <i data-lucide="chevrons-up-down" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="equip_cost">
+                            <th scope="col" class="hidden md:table-cell px-3 sm:px-6 py-2 sm:py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="equip_cost">
                                 <div class="flex items-center justify-end space-x-1">
                                     <span>Equipment</span>
-                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                    <i data-lucide="chevrons-up-down" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="material_cost">
+                            <th scope="col" class="hidden md:table-cell px-3 sm:px-6 py-2 sm:py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="material_cost">
                                 <div class="flex items-center justify-end space-x-1">
                                     <span>Material</span>
-                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                    <i data-lucide="chevrons-up-down" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="total_direct_cost">
+                            <th scope="col" class="px-3 sm:px-6 py-2 sm:py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="total_direct_cost">
                                 <div class="flex items-center justify-end space-x-1">
                                     <span>Total Cost</span>
-                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                    <i data-lucide="chevrons-up-down" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
+                            <th scope="col" class="px-3 sm:px-6 py-2 sm:py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
                                 <div class="flex items-center justify-center space-x-1">
                                     <span>Actions</span>
-                                    <i data-lucide="settings" class="h-4 w-4"></i>
+                                    <i data-lucide="settings" class="h-3 w-3 sm:h-4 sm:w-4"></i>
                                 </div>
                             </th>
                         </tr>
@@ -403,6 +488,14 @@
                         <!-- Rows will be inserted here by JavaScript -->
                     </tbody>
                 </table>
+                
+                <!-- Loading more indicator -->
+                <div id="loadingMore" class="text-center p-4 bg-gray-50 border-t hidden">
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                        <span class="text-sm text-gray-600">Loading more results...</span>
+                    </div>
+                </div>
             </div>
 
             <div id="noResults" class="text-center p-12 hidden">
@@ -570,12 +663,27 @@
             let searchTimeout;
             let isProcessing = false;
 
-            // Performance optimization: Virtual scrolling for large datasets
-            const BATCH_SIZE = 100;
-            let currentBatch = 0;
+            // Pagination and performance optimization
+            const ITEMS_PER_PAGE = 50;
+            const INITIAL_LOAD = 100; // Load first 100 items immediately
+            const LOAD_CHUNK_SIZE = 200; // Load 200 more when scrolling
+            let currentPage = 1;
+            let totalPages = 0;
+            let isLoadingMore = false;
+            let hasMoreData = true;
 
             // --- Enhanced File Loading Logic ---
             jsonFilePicker.addEventListener('change', handleFileSelect);
+            
+            // Retry auto-load button
+            document.addEventListener('DOMContentLoaded', () => {
+                const retryButton = document.getElementById('retryAutoLoad');
+                if (retryButton) {
+                    retryButton.addEventListener('click', () => {
+                        autoLoadTasks();
+                    });
+                }
+            });
 
             function handleFileSelect(event) {
                 const file = event.target.files[0];
@@ -661,6 +769,13 @@
                 isProcessing = false;
             }
 
+            function showLoadingState() {
+                loadingDiv.classList.remove('hidden');
+                uploadPrompt.classList.add('hidden');
+                uploadError.classList.add('hidden');
+                isProcessing = true;
+            }
+
             function enableControls() {
                 searchInput.disabled = false;
                 divisionFilterEl.disabled = false;
@@ -678,7 +793,13 @@
                 populateStatsOverview(tasks);
                 populateDivisionFilter(tasks);
                 setupEventListeners();
-                renderTable(tasks);
+                
+                // Initialize with pagination
+                filteredTasks = tasks;
+                currentPage = 1;
+                updatePagination();
+                renderCurrentPage();
+                
                 showStatsOverview();
             }
 
@@ -740,6 +861,13 @@
                 
                 // Export functionality
                 document.getElementById('exportBtn').addEventListener('click', exportFilteredResults);
+                
+                // Pagination controls
+                document.getElementById('itemsPerPageSelect').addEventListener('change', handleItemsPerPageChange);
+                document.getElementById('firstPageBtn').addEventListener('click', () => goToPage(1));
+                document.getElementById('prevPageBtn').addEventListener('click', () => goToPage(currentPage - 1));
+                document.getElementById('nextPageBtn').addEventListener('click', () => goToPage(currentPage + 1));
+                document.getElementById('lastPageBtn').addEventListener('click', () => goToPage(totalPages));
                 
                 // Table interactions
                 tableBody.addEventListener('click', handleTableClick);
@@ -843,8 +971,94 @@
                     sortTasks(filteredTasks, currentSort.field, currentSort.direction);
                 }
 
-                renderTable(filteredTasks);
+                // Reset to first page when filtering
+                currentPage = 1;
+                updatePagination();
+                renderCurrentPage();
                 updateFilterSummary();
+            }
+
+            // --- Pagination Functions ---
+            function updatePagination() {
+                const itemsPerPage = parseInt(document.getElementById('itemsPerPageSelect').value);
+                totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
+                
+                // Update pagination display
+                document.getElementById('currentPageDisplay').textContent = currentPage;
+                document.getElementById('totalPagesDisplay').textContent = totalPages;
+                document.getElementById('totalItemsDisplay').textContent = filteredTasks.length;
+                
+                const startItem = (currentPage - 1) * itemsPerPage + 1;
+                const endItem = Math.min(currentPage * itemsPerPage, filteredTasks.length);
+                document.getElementById('itemsRangeDisplay').textContent = `${startItem}-${endItem}`;
+                
+                // Update button states
+                document.getElementById('firstPageBtn').disabled = currentPage === 1;
+                document.getElementById('prevPageBtn').disabled = currentPage === 1;
+                document.getElementById('nextPageBtn').disabled = currentPage === totalPages;
+                document.getElementById('lastPageBtn').disabled = currentPage === totalPages;
+                
+                // Generate page numbers
+                generatePageNumbers();
+                
+                // Show/hide pagination controls
+                const paginationControls = document.getElementById('paginationControls');
+                if (totalPages > 1) {
+                    paginationControls.classList.remove('hidden');
+                } else {
+                    paginationControls.classList.add('hidden');
+                }
+            }
+
+            function generatePageNumbers() {
+                const pageNumbers = document.getElementById('pageNumbers');
+                pageNumbers.innerHTML = '';
+                
+                const maxVisiblePages = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                
+                // Adjust start page if we're near the end
+                if (endPage - startPage < maxVisiblePages - 1) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `px-3 py-1 text-sm border rounded ${
+                        i === currentPage 
+                            ? 'bg-blue-500 text-white border-blue-500' 
+                            : 'border-gray-300 hover:bg-gray-50'
+                    }`;
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', () => goToPage(i));
+                    pageNumbers.appendChild(pageBtn);
+                }
+            }
+
+            function goToPage(page) {
+                if (page < 1 || page > totalPages) return;
+                currentPage = page;
+                updatePagination();
+                renderCurrentPage();
+                
+                // Scroll to top of table
+                document.getElementById('tableWrapper').scrollTop = 0;
+            }
+
+            function handleItemsPerPageChange() {
+                currentPage = 1;
+                updatePagination();
+                renderCurrentPage();
+            }
+
+            function renderCurrentPage() {
+                const itemsPerPage = parseInt(document.getElementById('itemsPerPageSelect').value);
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const pageData = filteredTasks.slice(startIndex, endIndex);
+                
+                renderTable(pageData, false); // false means don't show pagination controls again
             }
 
             function filterByCostRange(cost, range) {
@@ -947,38 +1161,34 @@
                 lucide.createIcons();
             }
 
-            // --- Enhanced Table Rendering ---
-            function renderTable(tasksToRender) {
+            // --- Enhanced Table Rendering with Pagination ---
+            function renderTable(tasksToRender, showPagination = true) {
                 tableBody.innerHTML = '';
                 
-                if (tasksToRender.length === 0) {
+                if (!tasksToRender || tasksToRender.length === 0) {
                     noResultsDiv.classList.remove('hidden');
                     tableWrapper.classList.add('hidden');
-                } else {
-                    noResultsDiv.classList.add('hidden');
-                    tableWrapper.classList.remove('hidden');
-                    
-                    // Render tasks in batches for better performance
-                    currentBatch = 0;
-                    renderBatch(tasksToRender);
+                    if (showPagination) {
+                        document.getElementById('paginationControls').classList.add('hidden');
+                    }
+                    return;
                 }
-            }
 
-            function renderBatch(tasksToRender) {
-                const start = currentBatch * BATCH_SIZE;
-                const end = Math.min(start + BATCH_SIZE, tasksToRender.length);
-                const batch = tasksToRender.slice(start, end);
-
-                batch.forEach((task) => {
+                noResultsDiv.classList.add('hidden');
+                tableWrapper.classList.remove('hidden');
+                
+                // Create all rows in a document fragment for better performance
+                const fragment = document.createDocumentFragment();
+                tasksToRender.forEach((task) => {
                     const row = createTaskRow(task);
-                    tableBody.appendChild(row);
+                    fragment.appendChild(row);
                 });
+                
+                tableBody.appendChild(fragment);
 
-                currentBatch++;
-
-                // If there are more tasks, render the next batch after a small delay
-                if (end < tasksToRender.length) {
-                    setTimeout(() => renderBatch(tasksToRender), 10);
+                // Update pagination if needed
+                if (showPagination) {
+                    updatePagination();
                 }
             }
 
@@ -992,45 +1202,51 @@
                 const divisionBadge = `<span class="badge bg-gray-100 text-gray-700">${task.division || 'N/A'}</span>`;
                 
                 row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-mono font-medium text-gray-900">${task.csi_code}</div>
+                    <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
+                        <div class="text-xs sm:text-sm font-mono font-medium text-gray-900">${task.csi_code}</div>
                     </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm text-gray-900 line-clamp-2 max-w-xs" title="${escapeHtml(task.description)}">
+                    <td class="px-3 sm:px-6 py-2 sm:py-4">
+                        <div class="text-xs sm:text-sm text-gray-900 line-clamp-2 max-w-xs lg:max-w-md" title="${escapeHtml(task.description)}">
                             ${escapeHtml(task.description)}
                         </div>
+                        <div class="lg:hidden mt-1">
+                            ${divisionBadge}
+                        </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="badge bg-blue-100 text-blue-800">${task.uom}</span>
+                    <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
+                        <span class="badge bg-blue-100 text-blue-800 text-xs">${task.uom}</span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="hidden lg:table-cell px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
                         ${divisionBadge}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                        <div class="text-sm font-medium ${getCostClass(task.labor_cost)}">${formatCurrency(task.labor_cost)}</div>
+                    <td class="hidden md:table-cell px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-right">
+                        <div class="text-xs sm:text-sm font-medium ${getCostClass(task.labor_cost)}">${formatCurrency(task.labor_cost)}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                        <div class="text-sm font-medium ${getCostClass(task.equip_cost)}">${formatCurrency(task.equip_cost)}</div>
+                    <td class="hidden md:table-cell px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-right">
+                        <div class="text-xs sm:text-sm font-medium ${getCostClass(task.equip_cost)}">${formatCurrency(task.equip_cost)}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                        <div class="text-sm font-medium ${getCostClass(task.material_cost)}">${formatCurrency(task.material_cost)}</div>
+                    <td class="hidden md:table-cell px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-right">
+                        <div class="text-xs sm:text-sm font-medium ${getCostClass(task.material_cost)}">${formatCurrency(task.material_cost)}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                        <div class="text-lg font-bold ${getCostClass(task.total_direct_cost)}">${formatCurrency(task.total_direct_cost)}</div>
+                    <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-right">
+                        <div class="text-sm sm:text-lg font-bold ${getCostClass(task.total_direct_cost)}">${formatCurrency(task.total_direct_cost)}</div>
+                        <div class="md:hidden text-xs text-gray-500 mt-1">
+                            L: ${formatCurrency(task.labor_cost)} | E: ${formatCurrency(task.equip_cost)} | M: ${formatCurrency(task.material_cost)}
+                        </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                        <div class="flex items-center justify-center space-x-2">
-                            <button class="copy-btn inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors" title="Copy task details">
-                                <i data-lucide="copy" class="w-4 h-4 mr-1"></i>
-                                Copy
+                    <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-center">
+                        <div class="flex items-center justify-center space-x-1 sm:space-x-2">
+                            <button class="copy-btn inline-flex items-center px-2 sm:px-3 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors" title="Copy task details">
+                                <i data-lucide="copy" class="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1"></i>
+                                <span class="hidden sm:inline">Copy</span>
                             </button>
-                            <button class="details-btn inline-flex items-center px-3 py-1 border border-blue-300 rounded-md text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors" title="View detailed information">
-                                <i data-lucide="eye" class="w-4 h-4 mr-1"></i>
-                                Details
+                            <button class="details-btn inline-flex items-center px-2 sm:px-3 py-1 border border-blue-300 rounded-md text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors" title="View detailed information">
+                                <i data-lucide="eye" class="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1"></i>
+                                <span class="hidden sm:inline">Details</span>
                             </button>
-                            <button class="copy-json-btn inline-flex items-center px-3 py-1 border border-green-300 rounded-md text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 transition-colors" title="Copy as JSON">
-                                <i data-lucide="code" class="w-4 h-4 mr-1"></i>
-                                JSON
+                            <button class="copy-json-btn inline-flex items-center px-2 sm:px-3 py-1 border border-green-300 rounded-md text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 transition-colors" title="Copy as JSON">
+                                <i data-lucide="code" class="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1"></i>
+                                <span class="hidden sm:inline">JSON</span>
                             </button>
                         </div>
                     </td>
@@ -1235,18 +1451,53 @@ Total Direct Cost: ${formatCurrency(task.total_direct_cost)}`;
                 }).format(Number(value));
             }
 
-            // Auto-load tasks.json if it exists
-            if (window.location.search.includes('autoload=true')) {
-                // This could be used for development/testing
-                fetch('./tasks.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        allTasks = data;
+            // Auto-load tasks.json if it exists in the same directory
+            async function autoLoadTasks() {
+                try {
+                    showLoadingState();
+                    const response = await fetch('./tasks.json');
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Process data same as file upload
+                        allTasks = data.map((task, index) => ({
+                            ...task,
+                            id: index,
+                            // Ensure numeric values
+                            labor_cost: Number(task.labor_cost) || 0,
+                            equip_cost: Number(task.equip_cost) || 0,
+                            material_cost: Number(task.material_cost) || 0,
+                            total_direct_cost: Number(task.total_direct_cost) || 0,
+                            demolition_cost: Number(task.demolition_cost) || 0,
+                            // Add search-friendly text
+                            searchText: `${task.csi_code} ${task.description} ${task.division || ''}`.toLowerCase()
+                        }));
+
+                        loadingDiv.classList.add('hidden');
+                        uploadPrompt.classList.add('hidden');
+                        isProcessing = false;
+                        
+                        // Enable controls and initialize
                         enableControls();
                         initialize(allTasks);
-                    })
-                    .catch(err => console.log('Auto-load failed:', err));
+                        showSuccessMessage(`Successfully loaded ${allTasks.length} tasks from tasks.json`);
+                        
+                        console.log('Auto-loaded tasks.json successfully');
+                        return true;
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                } catch (err) {
+                    console.log('Auto-load failed, showing file upload option:', err.message);
+                    loadingDiv.classList.add('hidden');
+                    uploadPrompt.classList.remove('hidden');
+                    return false;
+                }
             }
+
+            // Try to auto-load tasks.json on page load
+            autoLoadTasks();
         });
     </script>
 
