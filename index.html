@@ -425,6 +425,12 @@
             </div>
 
             <div class="table-container hidden" id="tableWrapper">
+                <div class="mb-3 px-3 sm:px-6">
+                    <p class="text-xs text-gray-500 flex items-center">
+                        <i data-lucide="info" class="w-4 h-4 mr-1"></i>
+                        Click on any row to view detailed information
+                    </p>
+                </div>
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -1196,7 +1202,7 @@
                 const row = document.createElement('tr');
                 const taskIndex = allTasks.indexOf(task);
                 row.setAttribute('data-task-index', taskIndex);
-                row.className = 'table-row hover:bg-gray-50 transition-all duration-150';
+                row.className = 'table-row hover:bg-blue-50 cursor-pointer transition-all duration-150';
                 
                 const costClass = getCostClass(task.total_direct_cost);
                 const divisionBadge = `<span class="badge bg-gray-100 text-gray-700">${task.division || 'N/A'}</span>`;
@@ -1240,14 +1246,6 @@
                                 <i data-lucide="copy" class="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1"></i>
                                 <span class="hidden sm:inline">Copy</span>
                             </button>
-                            <button class="details-btn inline-flex items-center px-2 sm:px-3 py-1 border border-blue-300 rounded-md text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors" title="View detailed information">
-                                <i data-lucide="eye" class="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1"></i>
-                                <span class="hidden sm:inline">Details</span>
-                            </button>
-                            <button class="copy-json-btn inline-flex items-center px-2 sm:px-3 py-1 border border-green-300 rounded-md text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 transition-colors" title="Copy as JSON">
-                                <i data-lucide="code" class="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1"></i>
-                                <span class="hidden sm:inline">JSON</span>
-                            </button>
                         </div>
                     </td>
                 `;
@@ -1277,15 +1275,14 @@
 
                 const task = allTasks[taskIndex];
 
-                if (event.target.closest('.details-btn')) {
-                    showModal(task);
-                }
+                // If clicking on copy button, handle copy action
                 if (event.target.closest('.copy-btn')) {
                     copyTaskDetails(task, event.target.closest('.copy-btn'));
+                    return; // Prevent modal from opening
                 }
-                if (event.target.closest('.copy-json-btn')) {
-                    copyTaskJson(task, event.target.closest('.copy-json-btn'));
-                }
+                
+                // For any other click on the row, show modal details
+                showModal(task);
             }
 
             function showModal(task) {
@@ -1340,23 +1337,23 @@
                         document.body.removeChild(textArea);
                     }
                     
-                    button.innerHTML = `<i data-lucide="check" class="w-4 h-4 mr-1"></i>Copied!`;
+                    button.innerHTML = `<i data-lucide="check" class="w-3 h-3 sm:w-4 sm:h-4"></i>`;
                     lucide.createIcons();
                     
                     setTimeout(() => {
                         button.innerHTML = originalText;
                         lucide.createIcons();
-                    }, 2000);
+                    }, 1500);
                     
                 } catch (err) {
                     console.error('Copy failed:', err);
-                    button.innerHTML = `<i data-lucide="x" class="w-4 h-4 mr-1"></i>Failed`;
+                    button.innerHTML = `<i data-lucide="x" class="w-3 h-3 sm:w-4 sm:h-4"></i>`;
                     lucide.createIcons();
                     
                     setTimeout(() => {
                         button.innerHTML = originalText;
                         lucide.createIcons();
-                    }, 2000);
+                    }, 1500);
                 }
             }
 
@@ -1372,22 +1369,6 @@ Demolition Cost: ${formatCurrency(task.demolition_cost)}
 Total Direct Cost: ${formatCurrency(task.total_direct_cost)}`;
                 
                 copyToClipboard(textToCopy, button);
-            }
-
-            function copyTaskJson(task, button) {
-                const jsonToCopy = JSON.stringify({
-                    csi_code: task.csi_code,
-                    description: task.description,
-                    uom: task.uom,
-                    division: task.division,
-                    labor_cost: task.labor_cost,
-                    equip_cost: task.equip_cost,
-                    material_cost: task.material_cost,
-                    demolition_cost: task.demolition_cost,
-                    total_direct_cost: task.total_direct_cost
-                }, null, 2);
-                
-                copyToClipboard(jsonToCopy, button);
             }
 
             // --- Export Functionality ---
