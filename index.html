@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Task Catalog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Slim Select CSS for multi-select dropdown -->
+    <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"></link>
+    <!-- Lucide Icons for better iconography -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --surface-color: #ffffff;
+            --background-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Enhanced scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #cbd5e1, #94a3b8);
+            border-radius: 6px;
+            border: 2px solid #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #94a3b8, #64748b);
+        }
+
+        /* Improved table styles */
+        .table-container {
+            max-height: calc(100vh - 280px);
+            overflow-y: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* Enhanced modal */
+        .modal {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Enhanced buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Enhanced cards */
+        .card {
+            background: var(--surface-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        /* Stats cards */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* Slim Select customization */
+        .ss-main {
+            border-radius: 8px !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        .ss-main .ss-multi-selected {
+            padding: 8px !important;
+        }
+
+        /* Enhanced input styles */
+        .form-input {
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            background: var(--surface-color);
+        }
+        .form-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Table row hover effect */
+        .table-row {
+            transition: all 0.15s ease;
+        }
+        .table-row:hover {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.02));
+            transform: scale(1.001);
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            height: 4px;
+            border-radius: 2px;
+            animation: progress 2s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0%, 100% { transform: scaleX(0.3); opacity: 0.5; }
+            50% { transform: scaleX(1); opacity: 1; }
+        }
+
+        /* Cost indicator colors */
+        .cost-low { color: var(--accent-color); }
+        .cost-medium { color: var(--warning-color); }
+        .cost-high { color: var(--danger-color); }
+
+        /* Badge styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- Loading overlay -->
+    <div id="globalLoading" class="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50 hidden">
+        <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-lg font-medium text-gray-700">Processing your data...</p>
+            <p class="text-sm text-gray-500 mt-2">This may take a moment for large files</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+        <!-- Enhanced Header -->
+        <header class="mb-8 text-center">
+            <div class="relative">
+                <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                    Construction Task Catalog
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    A comprehensive and searchable interface for the US Army Corps of Engineers task database
+                </p>
+                <div class="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-10 animate-pulse"></div>
+                <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full opacity-10 animate-pulse" style="animation-delay: 1s;"></div>
+            </div>
+        </header>
+
+        <!-- Stats Overview (shown when data is loaded) -->
+        <div id="statsOverview" class="hidden mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="stat-card card p-6 text-center">
+                <div class="text-3xl font-bold text-blue-600" id="totalTasks">0</div>
+                <div class="text-sm font-medium text-gray-600 mt-1">Total Tasks</div>
+            </div>
+            <div class="stat-card card p-6 text-center">
+                <div class="text-3xl font-bold text-green-600" id="totalValue">$0</div>
+                <div class="text-sm font-medium text-gray-600 mt-1">Total Value</div>
+            </div>
+            <div class="stat-card card p-6 text-center">
+                <div class="text-3xl font-bold text-purple-600" id="totalDivisions">0</div>
+                <div class="text-sm font-medium text-gray-600 mt-1">Divisions</div>
+            </div>
+            <div class="stat-card card p-6 text-center">
+                <div class="text-3xl font-bold text-orange-600" id="avgCost">$0</div>
+                <div class="text-sm font-medium text-gray-600 mt-1">Average Cost</div>
+            </div>
+        </div>
+
+        <!-- Enhanced Search and Filter Controls -->
+        <div class="card p-6 mb-6 sticky top-4 z-20">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+                <div class="lg:col-span-5">
+                    <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-2">
+                        Search Tasks
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                        </div>
+                        <input type="text" id="searchInput" 
+                               placeholder="Search by description, CSI code, costs, division, or any field..." 
+                               class="form-input w-full pl-10 pr-12 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                               disabled>
+                        <div id="searchLoader" class="absolute inset-y-0 right-8 pr-3 flex items-center hidden">
+                            <div class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <button type="button" class="text-gray-400 hover:text-gray-600 transition" title="Search Tips: Use spaces to search multiple terms. Search works across all fields including costs, codes, descriptions, and divisions.">
+                                <i data-lucide="help-circle" class="h-4 w-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-3">
+                    <label for="divisionFilter" class="block text-sm font-medium text-gray-700 mb-2">
+                        Filter by Division
+                    </label>
+                    <select id="divisionFilter" multiple class="w-full" disabled>
+                        <!-- Options will be populated by JS -->
+                    </select>
+                </div>
+                <div class="lg:col-span-2">
+                    <label for="costRangeFilter" class="block text-sm font-medium text-gray-700 mb-2">
+                        Cost Range
+                    </label>
+                    <select id="costRangeFilter" class="form-input w-full py-3 rounded-lg" disabled>
+                        <option value="">All Costs</option>
+                        <option value="0-1000">$0 - $1,000</option>
+                        <option value="1000-10000">$1,000 - $10,000</option>
+                        <option value="10000-50000">$10,000 - $50,000</option>
+                        <option value="50000-100000">$50,000 - $100,000</option>
+                        <option value="100000+">$100,000+</option>
+                    </select>
+                </div>
+                <div class="lg:col-span-2">
+                    <button id="clearFiltersBtn" 
+                            class="btn-primary w-full py-3 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 flex items-center justify-center space-x-2" 
+                            disabled>
+                        <i data-lucide="x-circle" class="h-4 w-4"></i>
+                        <span>Clear Filters</span>
+                    </button>
+                </div>
+            </div>
+            <div id="filterSummary" class="mt-4 text-sm text-gray-600 hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span id="filteredCount">0</span> of <span id="totalCount">0</span> tasks displayed
+                        <span id="searchTerms" class="ml-2 text-blue-600 font-medium hidden"></span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button id="exportBtn" class="text-xs text-blue-600 hover:text-blue-800 underline hidden" title="Export filtered results">
+                            Export Results
+                        </button>
+                        <div class="text-xs text-gray-500">
+                            Quick search: Try "concrete", "$5000", "general", etc.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: Task Table -->
+        <main class="card overflow-hidden">
+            <div id="uploadPrompt" class="text-center p-12">
+                <div class="max-w-md mx-auto">
+                    <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <i data-lucide="upload-cloud" class="h-12 w-12 text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-3">Welcome to Task Catalog!</h2>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Upload your <code class="bg-gray-100 px-2 py-1 rounded font-mono text-sm">tasks.json</code> file to get started with exploring construction tasks and their costs.
+                    </p>
+                    <label for="jsonFilePicker" class="btn-primary cursor-pointer inline-flex items-center space-x-2 py-3 px-6 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200">
+                        <i data-lucide="file-plus" class="h-5 w-5"></i>
+                        <span>Select tasks.json</span>
+                    </label>
+                    <input type="file" id="jsonFilePicker" class="hidden" accept=".json">
+                    <p id="uploadError" class="text-red-500 text-sm mt-4 hidden"></p>
+                    <div class="mt-8 text-xs text-gray-500">
+                        <p>Supported format: JSON array with task objects</p>
+                        <p>Maximum file size: 50MB</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading" class="text-center p-12 hidden">
+                <div class="max-w-md mx-auto">
+                    <div class="loading-spinner mx-auto mb-6"></div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Processing your data</h3>
+                    <p class="text-gray-600 mb-4">Please wait while we load and analyze your tasks...</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                        <div class="progress-bar h-2 rounded-full"></div>
+                    </div>
+                    <p class="text-xs text-gray-500">This may take a moment for large files</p>
+                </div>
+            </div>
+
+            <div class="table-container hidden" id="tableWrapper">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="csi_code">
+                                <div class="flex items-center space-x-1">
+                                    <span>CSI Code</span>
+                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="description">
+                                <div class="flex items-center space-x-1">
+                                    <span>Description</span>
+                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="uom">
+                                <div class="flex items-center space-x-1">
+                                    <span>UOM</span>
+                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="division">
+                                <div class="flex items-center space-x-1">
+                                    <span>Division</span>
+                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="labor_cost">
+                                <div class="flex items-center justify-end space-x-1">
+                                    <span>Labor</span>
+                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="equip_cost">
+                                <div class="flex items-center justify-end space-x-1">
+                                    <span>Equipment</span>
+                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="material_cost">
+                                <div class="flex items-center justify-end space-x-1">
+                                    <span>Material</span>
+                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition" data-sort="total_direct_cost">
+                                <div class="flex items-center justify-end space-x-1">
+                                    <span>Total Cost</span>
+                                    <i data-lucide="chevrons-up-down" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                <div class="flex items-center justify-center space-x-1">
+                                    <span>Actions</span>
+                                    <i data-lucide="settings" class="h-4 w-4"></i>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noResults" class="text-center p-12 hidden">
+                <div class="max-w-md mx-auto">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i data-lucide="search-x" class="h-10 w-10 text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">No tasks found</h3>
+                    <p class="text-gray-600 mb-4">
+                        Try adjusting your search criteria or filters to find what you're looking for.
+                    </p>
+                    <button id="resetFiltersBtn" class="btn-primary py-2 px-4 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+                        Reset all filters
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Enhanced Details Modal -->
+    <div id="detailsModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-white w-full max-w-4xl rounded-2xl shadow-2xl p-0 transform scale-95">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-t-2xl text-white">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-bold mb-2" id="modalTitle">Task Details</h2>
+                        <div class="flex items-center space-x-4 text-blue-100">
+                            <span class="badge bg-white bg-opacity-20 text-white" id="modalCsiCode"></span>
+                            <span class="text-sm" id="modalDivision"></span>
+                        </div>
+                    </div>
+                    <button id="closeModal" class="text-white hover:text-gray-200 transition p-2 rounded-lg hover:bg-white hover:bg-opacity-10">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6">
+                <!-- Description -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                        <i data-lucide="file-text" class="w-5 h-5 mr-2 text-gray-600"></i>
+                        Description
+                    </h3>
+                    <div id="modalDescription" class="p-4 bg-gray-50 rounded-xl text-gray-700 leading-relaxed"></div>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i data-lucide="calculator" class="w-5 h-5 mr-2 text-gray-600"></i>
+                        Cost Breakdown
+                    </h3>
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <i data-lucide="users" class="w-5 h-5 text-blue-600"></i>
+                                <span class="text-xs font-medium text-blue-800 uppercase tracking-wide">Labor</span>
+                            </div>
+                            <p class="text-2xl font-bold text-blue-900" id="modalLabor"></p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <i data-lucide="truck" class="w-5 h-5 text-green-600"></i>
+                                <span class="text-xs font-medium text-green-800 uppercase tracking-wide">Equipment</span>
+                            </div>
+                            <p class="text-2xl font-bold text-green-900" id="modalEquip"></p>
+                        </div>
+                        <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-xl border border-yellow-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <i data-lucide="package" class="w-5 h-5 text-yellow-600"></i>
+                                <span class="text-xs font-medium text-yellow-800 uppercase tracking-wide">Material</span>
+                            </div>
+                            <p class="text-2xl font-bold text-yellow-900" id="modalMaterial"></p>
+                        </div>
+                        <div class="bg-gradient-to-br from-red-50 to-red-100 p-4 rounded-xl border border-red-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <i data-lucide="trash-2" class="w-5 h-5 text-red-600"></i>
+                                <span class="text-xs font-medium text-red-800 uppercase tracking-wide">Demolition</span>
+                            </div>
+                            <p class="text-2xl font-bold text-red-900" id="modalDemo"></p>
+                        </div>
+                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-xl border border-gray-200 lg:col-span-1 col-span-2">
+                            <div class="flex items-center justify-between mb-2">
+                                <i data-lucide="dollar-sign" class="w-5 h-5 text-gray-600"></i>
+                                <span class="text-xs font-medium text-gray-800 uppercase tracking-wide">Total</span>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-900" id="modalTotal"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Details -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                        <i data-lucide="info" class="w-5 h-5 mr-2 text-gray-600"></i>
+                        Additional Information
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="text-sm font-medium text-gray-600 mb-1">Unit of Measurement</p>
+                            <p class="text-lg font-semibold text-gray-800" id="modalUom"></p>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="text-sm font-medium text-gray-600 mb-1">Cost per Unit</p>
+                            <p class="text-lg font-semibold text-gray-800" id="modalCostPerUnit"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 justify-end">
+                    <button id="copyDetailsBtn" class="flex items-center justify-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span>Copy Details</span>
+                    </button>
+                    <button id="copyJsonBtn" class="flex items-center justify-center space-x-2 btn-primary py-3 px-6 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200">
+                        <i data-lucide="code" class="w-4 h-4"></i>
+                        <span>Copy as JSON</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slim Select JS -->
+    <script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            // --- Element References ---
+            const searchInput = document.getElementById('searchInput');
+            const divisionFilterEl = document.getElementById('divisionFilter');
+            const costRangeFilter = document.getElementById('costRangeFilter');
+            const tableBody = document.getElementById('taskTableBody');
+            const loadingDiv = document.getElementById('loading');
+            const globalLoading = document.getElementById('globalLoading');
+            const noResultsDiv = document.getElementById('noResults');
+            const tableWrapper = document.getElementById('tableWrapper');
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+            const jsonFilePicker = document.getElementById('jsonFilePicker');
+            const uploadPrompt = document.getElementById('uploadPrompt');
+            const uploadError = document.getElementById('uploadError');
+            const searchLoader = document.getElementById('searchLoader');
+            const filterSummary = document.getElementById('filterSummary');
+            const statsOverview = document.getElementById('statsOverview');
+            
+            // Modal elements
+            const modal = document.getElementById('detailsModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const copyJsonBtn = document.getElementById('copyJsonBtn');
+            const copyDetailsBtn = document.getElementById('copyDetailsBtn');
+            
+            // State management
+            let allTasks = [];
+            let filteredTasks = [];
+            let divisionSelect;
+            let currentSort = { field: null, direction: 'asc' };
+            let searchTimeout;
+            let isProcessing = false;
+
+            // Performance optimization: Virtual scrolling for large datasets
+            const BATCH_SIZE = 100;
+            let currentBatch = 0;
+
+            // --- Enhanced File Loading Logic ---
+            jsonFilePicker.addEventListener('change', handleFileSelect);
+
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                // File size validation (50MB limit)
+                const maxSize = 50 * 1024 * 1024; // 50MB
+                if (file.size > maxSize) {
+                    uploadError.textContent = "File size too large. Please select a file smaller than 50MB.";
+                    uploadError.classList.remove('hidden');
+                    return;
+                }
+
+                // Reset UI state
+                uploadPrompt.classList.add('hidden');
+                loadingDiv.classList.remove('hidden');
+                uploadError.classList.add('hidden');
+                isProcessing = true;
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        // Validate data structure
+                        if (!Array.isArray(data)) {
+                            throw new Error("JSON must be an array of task objects");
+                        }
+
+                        if (data.length === 0) {
+                            throw new Error("The file is empty or contains no tasks");
+                        }
+
+                        // Validate first few objects
+                        const requiredFields = ['csi_code', 'description', 'total_direct_cost'];
+                        const sampleTask = data[0];
+                        const missingFields = requiredFields.filter(field => !(field in sampleTask));
+                        
+                        if (missingFields.length > 0) {
+                            throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+                        }
+
+                        // Process data
+                        allTasks = data.map((task, index) => ({
+                            ...task,
+                            id: index,
+                            // Ensure numeric values
+                            labor_cost: Number(task.labor_cost) || 0,
+                            equip_cost: Number(task.equip_cost) || 0,
+                            material_cost: Number(task.material_cost) || 0,
+                            total_direct_cost: Number(task.total_direct_cost) || 0,
+                            demolition_cost: Number(task.demolition_cost) || 0,
+                            // Add search-friendly text
+                            searchText: `${task.csi_code} ${task.description} ${task.division || ''}`.toLowerCase()
+                        }));
+
+                        loadingDiv.classList.add('hidden');
+                        isProcessing = false;
+                        
+                        // Enable controls and initialize
+                        enableControls();
+                        initialize(allTasks);
+                        showSuccessMessage(`Successfully loaded ${allTasks.length} tasks`);
+
+                    } catch (err) {
+                        handleLoadingError(err.message);
+                    }
+                };
+
+                reader.onerror = function() {
+                    handleLoadingError("An error occurred while reading the file");
+                };
+
+                reader.readAsText(file);
+            }
+
+            function handleLoadingError(message) {
+                loadingDiv.classList.add('hidden');
+                uploadError.textContent = `Error: ${message}`;
+                uploadError.classList.remove('hidden');
+                uploadPrompt.classList.remove('hidden');
+                isProcessing = false;
+            }
+
+            function enableControls() {
+                searchInput.disabled = false;
+                divisionFilterEl.disabled = false;
+                costRangeFilter.disabled = false;
+                clearFiltersBtn.disabled = false;
+            }
+
+            function showSuccessMessage(message) {
+                // Could add a toast notification here
+                console.log(message);
+            }
+
+            // --- Enhanced UI Initialization ---
+            function initialize(tasks) {
+                populateStatsOverview(tasks);
+                populateDivisionFilter(tasks);
+                setupEventListeners();
+                renderTable(tasks);
+                showStatsOverview();
+            }
+
+            function populateStatsOverview(tasks) {
+                const totalTasks = tasks.length;
+                const totalValue = tasks.reduce((sum, task) => sum + task.total_direct_cost, 0);
+                const divisions = [...new Set(tasks.map(task => task.division))].length;
+                const avgCost = totalValue / totalTasks;
+
+                document.getElementById('totalTasks').textContent = totalTasks.toLocaleString();
+                document.getElementById('totalValue').textContent = formatCurrency(totalValue);
+                document.getElementById('totalDivisions').textContent = divisions;
+                document.getElementById('avgCost').textContent = formatCurrency(avgCost);
+            }
+
+            function showStatsOverview() {
+                statsOverview.classList.remove('hidden');
+            }
+
+            function populateDivisionFilter(tasks) {
+                const divisions = [...new Set(tasks.map(task => task.division))].sort();
+                divisionFilterEl.innerHTML = '';
+                
+                divisions.forEach(division => {
+                    const option = document.createElement('option');
+                    option.value = division;
+                    option.textContent = division;
+                    divisionFilterEl.appendChild(option);
+                });
+
+                // Initialize Slim Select with enhanced options
+                divisionSelect = new SlimSelect({
+                    select: '#divisionFilter',
+                    settings: {
+                        placeholderText: 'Select Divisions',
+                        searchText: 'Search divisions...',
+                        searchPlaceholder: 'Search',
+                        searchHighlight: true,
+                        closeOnSelect: false
+                    },
+                    events: {
+                        afterChange: () => {
+                            debounceFilter();
+                        }
+                    }
+                });
+            }
+
+            function setupEventListeners() {
+                // Debounced search
+                searchInput.addEventListener('input', debounceSearch);
+                
+                // Cost range filter
+                costRangeFilter.addEventListener('change', debounceFilter);
+                
+                // Clear filters
+                clearFiltersBtn.addEventListener('click', clearAllFilters);
+                resetFiltersBtn.addEventListener('click', clearAllFilters);
+                
+                // Export functionality
+                document.getElementById('exportBtn').addEventListener('click', exportFilteredResults);
+                
+                // Table interactions
+                tableBody.addEventListener('click', handleTableClick);
+                
+                // Column sorting
+                document.querySelectorAll('[data-sort]').forEach(header => {
+                    header.addEventListener('click', () => handleSort(header.dataset.sort));
+                });
+
+                // Modal events
+                closeModalBtn.addEventListener('click', hideModal);
+                modal.addEventListener('click', (event) => {
+                    if (event.target === modal) hideModal();
+                });
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') hideModal();
+                });
+
+                copyJsonBtn.addEventListener('click', (e) => {
+                    copyToClipboard(e.target.dataset.taskJson, e.target);
+                });
+
+                copyDetailsBtn.addEventListener('click', (e) => {
+                    const taskData = JSON.parse(e.target.dataset.taskDetails || '{}');
+                    copyTaskDetails(taskData, e.target);
+                });
+
+                // Search keyboard shortcuts
+                document.addEventListener('keydown', (event) => {
+                    // Ctrl/Cmd + F to focus search
+                    if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+                        event.preventDefault();
+                        searchInput.focus();
+                    }
+                    // Escape to clear search
+                    if (event.key === 'Escape' && document.activeElement === searchInput) {
+                        searchInput.value = '';
+                        debounceSearch();
+                    }
+                });
+            }
+
+            // --- Enhanced Search and Filtering ---
+            function debounceSearch() {
+                showSearchLoader();
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    hideSearchLoader();
+                    filterAndRender();
+                }, 300);
+            }
+
+            function debounceFilter() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(filterAndRender, 100);
+            }
+
+            function showSearchLoader() {
+                searchLoader.classList.remove('hidden');
+            }
+
+            function hideSearchLoader() {
+                searchLoader.classList.add('hidden');
+            }
+
+            function filterAndRender() {
+                if (isProcessing) return;
+
+                const searchTerms = searchInput.value.toLowerCase().split(/[\s,]+/).filter(term => term.trim());
+                const selectedDivisions = divisionSelect ? divisionSelect.getSelected() : [];
+                const costRange = costRangeFilter.value;
+
+                filteredTasks = allTasks.filter(task => {
+                    // Enhanced search filter - search in all content types
+                    const matchesSearch = searchTerms.length === 0 || 
+                        searchTerms.every(term => {
+                            return task.searchText.includes(term) ||
+                                   task.csi_code.toLowerCase().includes(term) ||
+                                   task.description.toLowerCase().includes(term) ||
+                                   (task.division && task.division.toLowerCase().includes(term)) ||
+                                   (task.uom && task.uom.toLowerCase().includes(term)) ||
+                                   task.total_direct_cost.toString().includes(term) ||
+                                   task.labor_cost.toString().includes(term) ||
+                                   task.equip_cost.toString().includes(term) ||
+                                   task.material_cost.toString().includes(term) ||
+                                   task.demolition_cost.toString().includes(term);
+                        });
+                    
+                    // Division filter
+                    const matchesDivision = selectedDivisions.length === 0 || 
+                        selectedDivisions.includes(task.division);
+                    
+                    // Cost range filter
+                    const matchesCost = filterByCostRange(task.total_direct_cost, costRange);
+                    
+                    return matchesSearch && matchesDivision && matchesCost;
+                });
+
+                // Apply sorting
+                if (currentSort.field) {
+                    sortTasks(filteredTasks, currentSort.field, currentSort.direction);
+                }
+
+                renderTable(filteredTasks);
+                updateFilterSummary();
+            }
+
+            function filterByCostRange(cost, range) {
+                if (!range) return true;
+                
+                const ranges = {
+                    '0-1000': [0, 1000],
+                    '1000-10000': [1000, 10000],
+                    '10000-50000': [10000, 50000],
+                    '50000-100000': [50000, 100000],
+                    '100000+': [100000, Infinity]
+                };
+                
+                const [min, max] = ranges[range] || [0, Infinity];
+                return cost >= min && cost < max;
+            }
+
+            function updateFilterSummary() {
+                const filteredCount = filteredTasks.length;
+                const totalCount = allTasks.length;
+                const searchTerms = searchInput.value.trim();
+                
+                document.getElementById('filteredCount').textContent = filteredCount.toLocaleString();
+                document.getElementById('totalCount').textContent = totalCount.toLocaleString();
+                
+                // Show search terms if any
+                const searchTermsEl = document.getElementById('searchTerms');
+                if (searchTerms) {
+                    searchTermsEl.textContent = `for "${searchTerms}"`;
+                    searchTermsEl.classList.remove('hidden');
+                } else {
+                    searchTermsEl.classList.add('hidden');
+                }
+                
+                // Show export button if filtered
+                const exportBtn = document.getElementById('exportBtn');
+                if (filteredCount > 0 && filteredCount < totalCount) {
+                    exportBtn.classList.remove('hidden');
+                } else {
+                    exportBtn.classList.add('hidden');
+                }
+                
+                if (filteredCount < totalCount || searchTerms) {
+                    filterSummary.classList.remove('hidden');
+                } else {
+                    filterSummary.classList.add('hidden');
+                }
+            }
+
+            function clearAllFilters() {
+                searchInput.value = '';
+                if (divisionSelect) divisionSelect.setSelected([]);
+                costRangeFilter.value = '';
+                currentSort = { field: null, direction: 'asc' };
+                filterAndRender();
+            }
+
+            // --- Enhanced Sorting ---
+            function handleSort(field) {
+                if (currentSort.field === field) {
+                    currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort.field = field;
+                    currentSort.direction = 'asc';
+                }
+                
+                updateSortIcons(field, currentSort.direction);
+                filterAndRender();
+            }
+
+            function sortTasks(tasks, field, direction) {
+                tasks.sort((a, b) => {
+                    let aVal = a[field];
+                    let bVal = b[field];
+                    
+                    // Handle different data types
+                    if (typeof aVal === 'number' && typeof bVal === 'number') {
+                        return direction === 'asc' ? aVal - bVal : bVal - aVal;
+                    } else {
+                        aVal = String(aVal).toLowerCase();
+                        bVal = String(bVal).toLowerCase();
+                        return direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                    }
+                });
+            }
+
+            function updateSortIcons(activeField, direction) {
+                // Reset all sort icons
+                document.querySelectorAll('[data-sort] i').forEach(icon => {
+                    icon.setAttribute('data-lucide', 'chevrons-up-down');
+                });
+                
+                // Update active sort icon
+                const activeIcon = document.querySelector(`[data-sort="${activeField}"] i`);
+                if (activeIcon) {
+                    activeIcon.setAttribute('data-lucide', direction === 'asc' ? 'chevron-up' : 'chevron-down');
+                }
+                
+                // Reinitialize icons
+                lucide.createIcons();
+            }
+
+            // --- Enhanced Table Rendering ---
+            function renderTable(tasksToRender) {
+                tableBody.innerHTML = '';
+                
+                if (tasksToRender.length === 0) {
+                    noResultsDiv.classList.remove('hidden');
+                    tableWrapper.classList.add('hidden');
+                } else {
+                    noResultsDiv.classList.add('hidden');
+                    tableWrapper.classList.remove('hidden');
+                    
+                    // Render tasks in batches for better performance
+                    currentBatch = 0;
+                    renderBatch(tasksToRender);
+                }
+            }
+
+            function renderBatch(tasksToRender) {
+                const start = currentBatch * BATCH_SIZE;
+                const end = Math.min(start + BATCH_SIZE, tasksToRender.length);
+                const batch = tasksToRender.slice(start, end);
+
+                batch.forEach((task) => {
+                    const row = createTaskRow(task);
+                    tableBody.appendChild(row);
+                });
+
+                currentBatch++;
+
+                // If there are more tasks, render the next batch after a small delay
+                if (end < tasksToRender.length) {
+                    setTimeout(() => renderBatch(tasksToRender), 10);
+                }
+            }
+
+            function createTaskRow(task) {
+                const row = document.createElement('tr');
+                const taskIndex = allTasks.indexOf(task);
+                row.setAttribute('data-task-index', taskIndex);
+                row.className = 'table-row hover:bg-gray-50 transition-all duration-150';
+                
+                const costClass = getCostClass(task.total_direct_cost);
+                const divisionBadge = `<span class="badge bg-gray-100 text-gray-700">${task.division || 'N/A'}</span>`;
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-mono font-medium text-gray-900">${task.csi_code}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900 line-clamp-2 max-w-xs" title="${escapeHtml(task.description)}">
+                            ${escapeHtml(task.description)}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="badge bg-blue-100 text-blue-800">${task.uom}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        ${divisionBadge}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                        <div class="text-sm font-medium ${getCostClass(task.labor_cost)}">${formatCurrency(task.labor_cost)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                        <div class="text-sm font-medium ${getCostClass(task.equip_cost)}">${formatCurrency(task.equip_cost)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                        <div class="text-sm font-medium ${getCostClass(task.material_cost)}">${formatCurrency(task.material_cost)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                        <div class="text-lg font-bold ${getCostClass(task.total_direct_cost)}">${formatCurrency(task.total_direct_cost)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                            <button class="copy-btn inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors" title="Copy task details">
+                                <i data-lucide="copy" class="w-4 h-4 mr-1"></i>
+                                Copy
+                            </button>
+                            <button class="details-btn inline-flex items-center px-3 py-1 border border-blue-300 rounded-md text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors" title="View detailed information">
+                                <i data-lucide="eye" class="w-4 h-4 mr-1"></i>
+                                Details
+                            </button>
+                            <button class="copy-json-btn inline-flex items-center px-3 py-1 border border-green-300 rounded-md text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 transition-colors" title="Copy as JSON">
+                                <i data-lucide="code" class="w-4 h-4 mr-1"></i>
+                                JSON
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                return row;
+            }
+
+            function getCostClass(cost) {
+                if (cost < 1000) return 'cost-low';
+                if (cost < 50000) return 'cost-medium';
+                return 'cost-high';
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // --- Enhanced Modal Logic ---
+            function handleTableClick(event) {
+                // Re-initialize icons for dynamically created buttons
+                lucide.createIcons();
+                
+                const taskIndex = event.target.closest('tr')?.dataset.taskIndex;
+                if (taskIndex === undefined) return;
+
+                const task = allTasks[taskIndex];
+
+                if (event.target.closest('.details-btn')) {
+                    showModal(task);
+                }
+                if (event.target.closest('.copy-btn')) {
+                    copyTaskDetails(task, event.target.closest('.copy-btn'));
+                }
+                if (event.target.closest('.copy-json-btn')) {
+                    copyTaskJson(task, event.target.closest('.copy-json-btn'));
+                }
+            }
+
+            function showModal(task) {
+                // Populate modal content
+                document.getElementById('modalCsiCode').textContent = task.csi_code;
+                document.getElementById('modalDivision').textContent = task.division || 'N/A';
+                document.getElementById('modalDescription').textContent = task.description;
+                document.getElementById('modalLabor').textContent = formatCurrency(task.labor_cost);
+                document.getElementById('modalEquip').textContent = formatCurrency(task.equip_cost);
+                document.getElementById('modalMaterial').textContent = formatCurrency(task.material_cost);
+                document.getElementById('modalDemo').textContent = formatCurrency(task.demolition_cost);
+                document.getElementById('modalTotal').textContent = formatCurrency(task.total_direct_cost);
+                document.getElementById('modalUom').textContent = task.uom;
+                document.getElementById('modalCostPerUnit').textContent = formatCurrency(task.total_direct_cost);
+                
+                // Store task data for copying
+                copyJsonBtn.dataset.taskJson = JSON.stringify(task, null, 2);
+                copyDetailsBtn.dataset.taskDetails = JSON.stringify(task);
+
+                // Show modal
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.querySelector('.modal-content').classList.remove('scale-95');
+                
+                // Reinitialize icons in modal
+                lucide.createIcons();
+            }
+
+            function hideModal() {
+                modal.classList.add('opacity-0');
+                modal.querySelector('.modal-content').classList.add('scale-95');
+                setTimeout(() => modal.classList.add('pointer-events-none'), 300);
+            }
+
+            // --- Enhanced Clipboard Functions ---
+            async function copyToClipboard(text, button) {
+                const originalText = button.innerHTML;
+                
+                try {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(text);
+                    } else {
+                        // Fallback for older browsers
+                        const textArea = document.createElement("textarea");
+                        textArea.value = text;
+                        textArea.style.position = "fixed";
+                        textArea.style.left = "-999999px";
+                        textArea.style.top = "-999999px";
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                    }
+                    
+                    button.innerHTML = `<i data-lucide="check" class="w-4 h-4 mr-1"></i>Copied!`;
+                    lucide.createIcons();
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        lucide.createIcons();
+                    }, 2000);
+                    
+                } catch (err) {
+                    console.error('Copy failed:', err);
+                    button.innerHTML = `<i data-lucide="x" class="w-4 h-4 mr-1"></i>Failed`;
+                    lucide.createIcons();
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        lucide.createIcons();
+                    }, 2000);
+                }
+            }
+
+            function copyTaskDetails(task, button) {
+                const textToCopy = `CSI Code: ${task.csi_code}
+Description: ${task.description}
+Division: ${task.division || 'N/A'}
+Unit of Measurement: ${task.uom}
+Labor Cost: ${formatCurrency(task.labor_cost)}
+Equipment Cost: ${formatCurrency(task.equip_cost)}
+Material Cost: ${formatCurrency(task.material_cost)}
+Demolition Cost: ${formatCurrency(task.demolition_cost)}
+Total Direct Cost: ${formatCurrency(task.total_direct_cost)}`;
+                
+                copyToClipboard(textToCopy, button);
+            }
+
+            function copyTaskJson(task, button) {
+                const jsonToCopy = JSON.stringify({
+                    csi_code: task.csi_code,
+                    description: task.description,
+                    uom: task.uom,
+                    division: task.division,
+                    labor_cost: task.labor_cost,
+                    equip_cost: task.equip_cost,
+                    material_cost: task.material_cost,
+                    demolition_cost: task.demolition_cost,
+                    total_direct_cost: task.total_direct_cost
+                }, null, 2);
+                
+                copyToClipboard(jsonToCopy, button);
+            }
+
+            // --- Export Functionality ---
+            function exportFilteredResults() {
+                if (filteredTasks.length === 0) return;
+
+                const csvData = convertToCSV(filteredTasks);
+                downloadCSV(csvData, `construction-tasks-filtered-${new Date().toISOString().split('T')[0]}.csv`);
+            }
+
+            function convertToCSV(tasks) {
+                const headers = [
+                    'CSI Code',
+                    'Description', 
+                    'UOM',
+                    'Division',
+                    'Labor Cost',
+                    'Equipment Cost',
+                    'Material Cost',
+                    'Demolition Cost',
+                    'Total Direct Cost'
+                ];
+
+                const rows = tasks.map(task => [
+                    `"${task.csi_code}"`,
+                    `"${task.description.replace(/"/g, '""')}"`,
+                    `"${task.uom}"`,
+                    `"${task.division || 'N/A'}"`,
+                    task.labor_cost,
+                    task.equip_cost,
+                    task.material_cost,
+                    task.demolition_cost,
+                    task.total_direct_cost
+                ]);
+
+                return [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+            }
+
+            function downloadCSV(csvData, filename) {
+                const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                
+                if (link.download !== undefined) {
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', filename);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+
+            // --- Utility Functions ---
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(Number(value));
+            }
+
+            // Auto-load tasks.json if it exists
+            if (window.location.search.includes('autoload=true')) {
+                // This could be used for development/testing
+                fetch('./tasks.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        allTasks = data;
+                        enableControls();
+                        initialize(allTasks);
+                    })
+                    .catch(err => console.log('Auto-load failed:', err));
+            }
+        });
+    </script>
+
+</body>
+</html>
